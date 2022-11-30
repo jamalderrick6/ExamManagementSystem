@@ -64,11 +64,7 @@
     display: flex;
 }
 
-.total__attempted {
-    flex: 0.5;
-}
-
-.correct__attempted {
+.total__attempted, .correct__attempted, .marks__verdict {
     flex: 0.5;
 }
 
@@ -87,6 +83,36 @@
 .correct__attempted .ant-progress-bg {
     background-color: var(--success) !important;
 }
+
+.verdict{
+    width: 100%;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.verdict span{
+    padding: 5px 20px;
+    color: #fff;
+    border-radius: 30px;
+}
+
+.verdict.pass span{
+    background-color: rgb(82, 210, 174);
+}
+
+.verdict.fair span{
+    background-color: rgba(82, 210, 174, 0.7);
+}
+
+.verdict.average span{
+    background-color: #ff8d29;
+}
+
+.verdict.fail span{
+    background-color: #f00;
+}
+
+
 
 @media(max-width:768px) {
     .marks {

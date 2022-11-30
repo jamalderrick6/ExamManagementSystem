@@ -25,6 +25,8 @@ function ShowResult(props) {
     totalAttempt = rightAnswers - -wrongAnswers;
   }
   const submitDate = new Date(date);
+  const percent = Math.floor((marks / totalMarks) * 100)
+  const verdict = percent>=80? "PASS" : percent>=60? "FAIR": percent>=50? "AVERAGE": "FAIL"
   return (
     <>
       <div className="container dashboard">
@@ -60,7 +62,7 @@ function ShowResult(props) {
                 <div className="percentage">
                   <div className="percentage__heading">Your Score</div>
                   <Progress
-                    percent={Math.floor((marks / totalMarks) * 100)}
+                    percent={percent}
                     status="active"
                   />
                 </div>
@@ -114,6 +116,19 @@ function ShowResult(props) {
                         percent={Math.floor((rightAnswers / totalMarks) * 100)}
                         status="active"
                       />
+                    </div>
+                  </div>
+
+                  <div className="marks__verdict">
+                    <div className="percentage">
+                      <div className="percentage__heading">
+                        Verdict
+                      </div>
+                      <div className={"verdict " + verdict.toLowerCase()}>
+                    <span>
+                    {verdict}
+                    </span>
+                    </div>
                     </div>
                   </div>
                 </div>
