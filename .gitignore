@@ -8,10 +8,8 @@
 # testing
 /coverage
 
-
-
-
-
+#variables
+.env
 
 
 npm-debug.log*
