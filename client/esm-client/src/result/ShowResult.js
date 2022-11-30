@@ -7,6 +7,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 function ShowResult(props) {
+  const { userInfo } = props;
   const { testName, date } = props.selectedTest;
   const testInfo = props.selectedTest[0];
   let marks,
@@ -59,6 +60,10 @@ function ShowResult(props) {
           <Col className="gutter-row" xs={24} sm={24} md={14} xl={14}>
             <div id="results-container" className="result__wrapper">
               <div className="result__wrapper__header">
+              <div className="result__heading">
+                  <div className="result__test__name">User Name: </div>
+                  <div className="result__test__name__field">{`${userInfo.firstName} ${userInfo.lastName} `}</div>
+                </div>
                 <div className="result__heading">
                   <div className="result__test__name">Test Name: </div>
                   <div className="result__test__name__field">{testName}</div>
@@ -157,6 +162,7 @@ function ShowResult(props) {
 
 const mapStateToProps = (state) => {
   return {
+    userInfo: state.auth.user,
     selectedTest: state.selectedTest.selectedTestResultData,
   };
 };
