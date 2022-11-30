@@ -12,7 +12,7 @@ import {
 import "./Reset.css";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { signUpUser, accountCreated } from "../actions/authActions";
+import {accountCreated, resetPassword } from "../actions/authActions";
 import { Link } from "react-router-dom";
 
 function Reset(props) {
@@ -21,17 +21,17 @@ function Reset(props) {
   const { Option } = Select;
   const { isLoading } = props;
 
-  const submitForm = (values) => {
+  const submitForm = (values)  => {
     props.sendSignUpRequest(values);
     console.log(values);
   };
 
   const openNotification = (type) => {
     const args = {
-      message: type==='success'?"Account Created": "Account Creation Failed.",
+      message: type==='success'?"Password reset passed": "Password reset failed.",
       description:
       type==='success'?
-        "Congratulations, Now you are part of our family. Please login to continue.": props.signupError,
+        "Congratulations, Password has been reset. Check email for new password.": props.sendPassResetError,
       duration: 3,
     };
     type==='success'?notification.open(args): notification.error(args);
@@ -41,11 +41,10 @@ function Reset(props) {
     console.log("Failed:", errorInfo);
   };
   useEffect(() => {
-    if (props.accountCreated) {
+    if (props.sendPassResetSuccess) {
       openNotification('success');
-      props.sendUserAccountCreated();
     }
-    if(props.signupError){
+    if(props.sendPassResetError){
       openNotification('error');
     }
   }, [props]);
@@ -68,8 +67,8 @@ function Reset(props) {
           initialValues={{
             remember: true,
           }}
-          // onFinish={submitForm}
-          // onFinishFailed={onFinishFailed}
+          onFinish={submitForm}
+          onFinishFailed={onFinishFailed}
         >
           <Form.Item
             name="email"
@@ -103,14 +102,14 @@ const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.isAuthenticated,
     isLoading: state.auth.isLoading,
-    accountCreated: state.auth.accountCreated,
-    signupError: state.auth.signupError,
+    sendPassResetError: state.auth.sendPassResetError,
+    sendPassResetSuccess: state.auth.sendPassResetSuccess,
+
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    sendSignUpRequest: (values) => dispatch(signUpUser(values)),
-    sendUserAccountCreated: () => dispatch(accountCreated()),
+    sendSignUpRequest: (values) => dispatch(resetPassword(values)),
   };
 };
 

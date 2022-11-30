@@ -1,6 +1,6 @@
 import { Form, Input, Button } from "antd";
 import React, { useEffect } from "react";
-import { Row, Col, Typography } from "antd";
+import { Row, Col, Typography, notification } from "antd";
 import "./Login.css";
 import { useHistory } from "react-router-dom";
 import { loginUser } from "../actions/authActions";
@@ -19,9 +19,21 @@ function Login(props) {
     },
   };
 
+  const openNotification = () => {
+    const args = {
+      message: "Login Error",
+      description: "Please enter correct credentials.",
+      duration: 3,
+    };
+    notification.error(args);
+  };
+
   useEffect(() => {
     if (props.isAuthenticated) {
       history.push("/");
+    }
+    if(props.loginError){
+      openNotification()
     }
   }, [props]);
 
@@ -100,6 +112,7 @@ const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.isAuthenticated,
     isLoading: state.auth.isLoading,
+    loginError: state.auth.loginError
   };
 };
 const mapDispatchToProps = (dispatch) => {

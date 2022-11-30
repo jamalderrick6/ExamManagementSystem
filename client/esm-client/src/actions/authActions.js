@@ -33,9 +33,10 @@ const receiveLogin = (user, profileID) => {
   };
 };
 
-const loginError = () => {
+const loginError = (errMess) => {
   return {
     type: LOGIN_FAILURE,
+    errMess
   };
 };
 
@@ -130,17 +131,20 @@ export const loginUser = (values) => (dispatch) => {
   fetch("/user/login", requestOptions)
     .then((response) => response.json())
     .then((data) => {
+      console.log("data", data)
       if (data.token) {
         localStorage.setItem("token", `Bearer ${data.token}`);
         localStorage.setItem("userProfile", JSON.stringify(data.payload.user));
         localStorage.setItem("profileID", data.payload.profileID);
         dispatch(receiveLogin(data.payload.user, data.payload.profileID));
         // history.push("/studentHome");
+      }else{
+        dispatch(loginError(data.message));
       }
     })
     .catch((error) => {
       //Do something with the error if you want!
-      dispatch(loginError());
+      dispatch(loginError(error));
     });
 };
 
@@ -173,6 +177,25 @@ export const signUpUser = (values) => async(dispatch) => {
       console.log('error in api', error)
       dispatch(signupError());
     });
+};
+
+export const resetPassword = (values) => async(dispatch) => {
+  dispatch(sendingPassReset());
+
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(values),
+  };
+
+  const response = await fetch("/user/reset", requestOptions);
+  const json = await response.json()
+  console.log("data", response, json)
+  if([200,201].includes(response.status)){
+    dispatch(sendPassResetSuccess());
+  }else{
+    dispatch(sendPassResetError(json.msg));
+  }
 };
 
 export const accountCreated = () => (dispatch) => {
