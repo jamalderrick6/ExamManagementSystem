@@ -1,8 +1,10 @@
 import React from "react";
-import { Row, Col, Divider, Progress } from "antd";
+import { Row, Col, Divider, Progress, Button } from "antd";
 import { connect } from "react-redux";
 import "./ShowResult.css";
 import Chart from "react-google-charts";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 function ShowResult(props) {
   const { testName, date } = props.selectedTest;
@@ -24,20 +26,39 @@ function ShowResult(props) {
     wrongAnswers = testInfo.wrong;
     totalAttempt = rightAnswers - -wrongAnswers;
   }
+
+  const DownloadResults = () => {
+    const input = document.getElementById('results-container');
+    html2canvas(input)
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, 'JPEG', 0, 0);
+        let pdfName = `${testName}-${date}.pdf`
+        pdf.save(pdfName);
+      })
+    ;
+  };
   const submitDate = new Date(date);
-  const percent = Math.floor((marks / totalMarks) * 100)
-  const verdict = percent>=80? "PASS" : percent>=60? "FAIR": percent>=50? "AVERAGE": "FAIL"
+  const percent = Math.floor((marks / totalMarks) * 100);
+  const verdict =
+    percent >= 80
+      ? "PASS"
+      : percent >= 60
+      ? "FAIR"
+      : percent >= 50
+      ? "AVERAGE"
+      : "FAIL";
   return (
     <>
       <div className="container dashboard">
+        <Button type="primary" onClick={DownloadResults}>
+          Download Results
+        </Button>
         <Row gutter={[48, 10]} justify="center">
           <Col className="gutter-row" xs={24} sm={24} md={14} xl={14}>
-            <div className="result__wrapper">
+            <div id="results-container" className="result__wrapper">
               <div className="result__wrapper__header">
-                {/* <div className="result__heading">
-                  <div className="result__test__name">Name: </div>
-                  <div className="result__test__name__field">{name}</div>
-                </div> */}
                 <div className="result__heading">
                   <div className="result__test__name">Test Name: </div>
                   <div className="result__test__name__field">{testName}</div>
@@ -61,10 +82,7 @@ function ShowResult(props) {
               <div className="result__wrapper__body">
                 <div className="percentage">
                   <div className="percentage__heading">Your Score</div>
-                  <Progress
-                    percent={percent}
-                    status="active"
-                  />
+                  <Progress percent={percent} status="active" />
                 </div>
                 <div className="marks__info">
                   <div className="marks__chart">
@@ -121,14 +139,10 @@ function ShowResult(props) {
 
                   <div className="marks__verdict">
                     <div className="percentage">
-                      <div className="percentage__heading">
-                        Verdict
-                      </div>
+                      <div className="percentage__heading">Verdict</div>
                       <div className={"verdict " + verdict.toLowerCase()}>
-                    <span>
-                    {verdict}
-                    </span>
-                    </div>
+                        <span>{verdict}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
